@@ -26,12 +26,27 @@ To complete this tutorial, you need the following:
 
 Let’s create a simple Python application using the Flask framework that we’ll use as our example. Create a directory in your local machine named `python-docker` and follow the steps below to create a simple web server.
 
+It is also a good idea to set up a [virtual environment](https://docs.python.org/3/library/venv.html#creating-virtual-environments) for your Python projects. It will
+keep your work environments clean, smaller and easier to manage. This is especially true for building docker images, as you want to make sure you include only the packages
+you need. The steps below will also include how to set up a virtual environment.
+
 ```console
 $ cd /path/to/python-docker
+$ python3 -m venv venv
+$ source venv/bin/activate
 $ pip3 install Flask
 $ pip3 freeze > requirements.txt
 $ touch app.py
 ```
+
+It is important to note that after running the above commands you should still be in your Python virtual environment. If you want to leave this environment, you simply run the following command:
+
+```console
+$ deactivate
+```
+
+You should now be back to your *normal* non-virtual environment version of your Python environment. If you want to understand more about how `venv` works, it is recommended to check the 
+[official documentation](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment).
 
 Now, let’s add some code to handle simple web requests. Open this working directory in your favorite IDE and enter the following code into the `app.py` file.
 
@@ -104,10 +119,10 @@ RUN pip3 install -r requirements.txt
 At this point, we have an image that is based on Python version 3.8 and we have installed our dependencies. The next step is to add our source code into the image. We’ll use the `COPY` command just like we did with our `requirements.txt` file above.
 
 ```dockerfile
-COPY . .
+COPY app.py .
 ```
 
-This `COPY` command takes all the files located in the current directory and copies them into the image. Now, all we have to do is to tell Docker what command we want to run when our image is executed inside a container. We do this using the `CMD` command. Note that we need to make the application externally visible (i.e. from outside the container) by specifying `--host=0.0.0.0`.
+This `COPY` command takes the `app.py` file and copies it into the image. Now, all we have to do is to tell Docker what command we want to run when our image is executed inside a container. We do this using the `CMD` command. Note that we need to make the application externally visible (i.e. from outside the container) by specifying `--host=0.0.0.0`.
 
 ```dockerfile
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
@@ -125,7 +140,7 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY . .
+COPY app.py .
 
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 ```
@@ -163,7 +178,7 @@ $ docker build --tag python-docker .
  => CACHED [2/6] WORKDIR /app
  => [3/6] COPY requirements.txt requirements.txt
  => [4/6] RUN pip3 install -r requirements.txt
- => [5/6] COPY . .
+ => [5/6] COPY app.py .
  => [6/6] CMD [ "python3", "-m", "flask", "run", "--host=0.0.0.0"]
  => exporting to image
  => => exporting layers

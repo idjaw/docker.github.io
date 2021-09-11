@@ -143,7 +143,14 @@ if __name__ == "__main__":
 
 We’ve added the MySQL module and updated the code to connect to the database server, created a database and table. We also created a couple of routes to save widgets and fetch widgets. We now need to rebuild our image so it contains our changes.
 
-First, let’s add the `mysql-connector-python` module to our application using pip.
+First, let’s add the `mysql-connector-python` module to our application using pip. Keeping in mind what you had done [before](build-images.md#sample-application) with setting up your
+virtual environment, you are either still inside that context, or, you can simply run the following first before proceeding with the package installing.
+
+```console
+$ source venv/bin/activate
+```
+
+And now you can install the required package.
 
 ```console
 $ pip3 install mysql-connector-python
